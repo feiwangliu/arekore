@@ -186,22 +186,12 @@
     }
 
 
-    #prevZone {
-      left: 0;
-      width: 28%;
-    }
-
-
-    #centerZone {
-      left: 28%;
-      width: 44%;
-    }
-
-
+    #prevZone,
+    #centerZone,
     #nextZone {
-      right: 0;
-      width: 28%;
+      width: auto;
     }
+
 
 
     /* ========================================
@@ -284,32 +274,6 @@
       transform:
         translateY(-50%)
         translateX(0);
-    }
-
-
-    /* ========================================
-       DESKTOP HOVER ARROWS
-    ======================================== */
-
-    @media (min-width: 900px) {
-
-      #prevZone:hover ~ #leftArrow {
-        opacity: 0.62;
-
-        transform:
-          translateY(-50%)
-          translateX(0);
-      }
-
-
-      #nextZone:hover ~ #rightArrow {
-        opacity: 0.62;
-
-        transform:
-          translateY(-50%)
-          translateX(0);
-      }
-
     }
 
 
@@ -859,24 +823,50 @@
     const lastRect =
       visibleImages[visibleImages.length - 1].getBoundingClientRect();
 
+    const bookLeft = firstRect.left;
+    const bookRight = lastRect.right;
+    const bookWidth = Math.max(1, bookRight - bookLeft);
+
     const arrowWidth =
       isDesktop() ? 72 : 52;
 
     if (isDesktop()) {
 
-      const gap = 20;
+      const arrowGap = 20;
+      const edgeZone = 92;
 
       leftArrow.style.left =
         Math.max(
           4,
-          firstRect.left - arrowWidth - gap
+          bookLeft - arrowWidth - arrowGap
         ) + "px";
 
       rightArrow.style.left =
         Math.min(
           window.innerWidth - arrowWidth - 4,
-          lastRect.right + gap
+          bookRight + arrowGap
         ) + "px";
+
+      prevZone.style.left =
+        Math.max(0, bookLeft - edgeZone) + "px";
+      prevZone.style.right = "auto";
+      prevZone.style.width =
+        Math.min(edgeZone + 36, bookLeft + 36) + "px";
+
+      nextZone.style.left =
+        Math.max(0, bookRight - 36) + "px";
+      nextZone.style.right = "auto";
+      nextZone.style.width =
+        Math.min(
+          edgeZone + 36,
+          window.innerWidth - Math.max(0, bookRight - 36)
+        ) + "px";
+
+      centerZone.style.left =
+        (bookLeft + bookWidth * 0.28) + "px";
+      centerZone.style.right = "auto";
+      centerZone.style.width =
+        (bookWidth * 0.44) + "px";
 
     } else {
 
@@ -885,15 +875,26 @@
       leftArrow.style.left =
         Math.max(
           0,
-          firstRect.left + inset
+          bookLeft + inset
         ) + "px";
 
       rightArrow.style.left =
         Math.min(
           window.innerWidth - arrowWidth,
-          lastRect.right - arrowWidth - inset
+          bookRight - arrowWidth - inset
         ) + "px";
 
+      prevZone.style.left = "0px";
+      prevZone.style.right = "auto";
+      prevZone.style.width = "28%";
+
+      centerZone.style.left = "28%";
+      centerZone.style.right = "auto";
+      centerZone.style.width = "44%";
+
+      nextZone.style.left = "72%";
+      nextZone.style.right = "auto";
+      nextZone.style.width = "28%";
     }
 
     leftArrow.style.right = "auto";
@@ -986,6 +987,11 @@
 
       render();
 
+      setTimeout(
+        showMobileTurnHint,
+        40
+      );
+
       return;
 
     }
@@ -1065,6 +1071,11 @@
       currentPage--;
 
       render();
+
+      setTimeout(
+        showMobileTurnHint,
+        40
+      );
 
       return;
 
@@ -1203,6 +1214,37 @@
 
 
 
+  function showMobileTurnHint() {
+
+    if (isDesktop()) {
+      return;
+    }
+
+    leftArrow.classList.remove("visible");
+    rightArrow.classList.remove("visible");
+
+    if (currentPage > 1) {
+      leftArrow.classList.add("visible");
+    }
+
+    if (currentPage < TOTAL_PAGES) {
+      rightArrow.classList.add("visible");
+    }
+
+    setTimeout(
+      () => {
+        if (!isDesktop()) {
+          leftArrow.classList.remove("visible");
+          rightArrow.classList.remove("visible");
+        }
+      },
+      1200
+    );
+
+  }
+
+
+
   function toggleHints() {
 
 
@@ -1276,95 +1318,41 @@
   ======================================== */
 
 
-  prevZone
-    .addEventListener(
-      "mouseenter",
-      () => {
-
-        if (
-          isDesktop()
-          &&
-          currentPage > 1
-        ) {
-
-          leftArrow
-            .classList
-            .add(
-              "visible"
-            );
-
-        }
-
+  prevZone.addEventListener(
+    "mouseenter",
+    () => {
+      if (isDesktop() && currentPage > 1) {
+        leftArrow.classList.add("visible");
       }
-    );
+    }
+  );
 
-
-  prevZone
-    .addEventListener(
-      "mouseleave",
-      () => {
-
-        if (
-          isDesktop()
-        ) {
-
-          leftArrow
-            .classList
-            .remove(
-              "visible"
-            );
-
-        }
-
+  prevZone.addEventListener(
+    "mouseleave",
+    () => {
+      if (isDesktop()) {
+        leftArrow.classList.remove("visible");
       }
-    );
+    }
+  );
 
-
-  nextZone
-    .addEventListener(
-      "mouseenter",
-      () => {
-
-        if (
-          isDesktop()
-          &&
-          currentPage
-          <
-          TOTAL_PAGES
-        ) {
-
-          rightArrow
-            .classList
-            .add(
-              "visible"
-            );
-
-        }
-
+  nextZone.addEventListener(
+    "mouseenter",
+    () => {
+      if (isDesktop() && currentPage < TOTAL_PAGES) {
+        rightArrow.classList.add("visible");
       }
-    );
+    }
+  );
 
-
-  nextZone
-    .addEventListener(
-      "mouseleave",
-      () => {
-
-        if (
-          isDesktop()
-        ) {
-
-          rightArrow
-            .classList
-            .remove(
-              "visible"
-            );
-
-        }
-
+  nextZone.addEventListener(
+    "mouseleave",
+    () => {
+      if (isDesktop()) {
+        rightArrow.classList.remove("visible");
       }
-    );
-
+    }
+  );
 
 
   /* ========================================
