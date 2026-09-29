@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#f7f4ee">
+  <meta name="theme-color" content="#111111">
 
   <title>あれこれ</title>
 
@@ -16,54 +16,44 @@
       margin: 0;
       width: 100%;
       height: 100%;
+      background: #111;
+      overflow: hidden;
     }
 
     body {
-      background: #f7f4ee;
-      font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Hiragino Sans",
-        "Yu Gothic",
-        sans-serif;
-      color: #333;
-    }
-
-    main {
-      width: 100%;
-      min-height: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 24px;
     }
 
-    .book-start {
-      text-align: center;
+    .book {
+      width: 100%;
+      height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    h1 {
-      margin: 0;
-      font-size: clamp(42px, 10vw, 82px);
-      font-weight: 700;
-      letter-spacing: 0.08em;
-    }
-
-    .edition {
-      margin-top: 18px;
-      font-size: 12px;
-      letter-spacing: 0.12em;
-      color: #888;
+    .cover {
+      display: block;
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      user-select: none;
+      -webkit-user-drag: none;
     }
   </style>
 </head>
 
 <body>
-  <main>
-    <div class="book-start">
-      <h1>あれこれ</h1>
-      <div class="edition">First Edition · 2026</div>
-    </div>
+  <main class="book">
+    <img
+      class="cover"
+      src="001.jpg"
+      alt="あれこれ"
+    >
   </main>
 </body>
 </html>
