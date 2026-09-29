@@ -91,6 +91,8 @@
       justify-content: center;
 
       gap: 0;
+
+      position: relative;
     }
 
 
@@ -122,6 +124,31 @@
       #pages.two-pages .page {
         max-width: 50%;
         max-height: 100%;
+      }
+
+      #pages.two-pages::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        width: 34px;
+        transform: translateX(-50%);
+        pointer-events: none;
+        z-index: 4;
+        background:
+          linear-gradient(
+            to right,
+            rgba(0,0,0,0) 0%,
+            rgba(0,0,0,0.025) 24%,
+            rgba(0,0,0,0.075) 43%,
+            rgba(0,0,0,0.15) 49%,
+            rgba(0,0,0,0.19) 50%,
+            rgba(0,0,0,0.15) 51%,
+            rgba(0,0,0,0.075) 57%,
+            rgba(0,0,0,0.025) 76%,
+            rgba(0,0,0,0) 100%
+          );
       }
 
     }
@@ -729,11 +756,21 @@
             pageNumber
           );
 
+        img.addEventListener(
+          "load",
+          positionArrows,
+          { once: true }
+        );
+
         pagesElement.appendChild(
           img
         );
 
       }
+    );
+
+    requestAnimationFrame(
+      positionArrows
     );
 
 
@@ -797,6 +834,70 @@
         TOTAL_PAGES;
 
     }
+
+  }
+
+
+
+  /* ========================================
+     ARROW POSITION
+  ======================================== */
+
+
+  function positionArrows() {
+
+    const visibleImages =
+      pagesElement.querySelectorAll(".page");
+
+    if (!visibleImages.length) {
+      return;
+    }
+
+    const firstRect =
+      visibleImages[0].getBoundingClientRect();
+
+    const lastRect =
+      visibleImages[visibleImages.length - 1].getBoundingClientRect();
+
+    const arrowWidth =
+      isDesktop() ? 72 : 52;
+
+    if (isDesktop()) {
+
+      const gap = 20;
+
+      leftArrow.style.left =
+        Math.max(
+          4,
+          firstRect.left - arrowWidth - gap
+        ) + "px";
+
+      rightArrow.style.left =
+        Math.min(
+          window.innerWidth - arrowWidth - 4,
+          lastRect.right + gap
+        ) + "px";
+
+    } else {
+
+      const inset = 14;
+
+      leftArrow.style.left =
+        Math.max(
+          0,
+          firstRect.left + inset
+        ) + "px";
+
+      rightArrow.style.left =
+        Math.min(
+          window.innerWidth - arrowWidth,
+          lastRect.right - arrowWidth - inset
+        ) + "px";
+
+    }
+
+    leftArrow.style.right = "auto";
+    rightArrow.style.right = "auto";
 
   }
 
@@ -1551,6 +1652,10 @@
             hideHints();
 
             render();
+
+            requestAnimationFrame(
+              positionArrows
+            );
 
           },
           120
