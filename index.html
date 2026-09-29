@@ -23,9 +23,12 @@
     body {
       margin: 0;
       padding: 0;
+
       width: 100%;
       height: 100%;
+
       overflow: hidden;
+
       background: #151515;
 
       font-family:
@@ -38,12 +41,13 @@
 
     body {
       overscroll-behavior: none;
+      touch-action: manipulation;
     }
 
 
-    /* ==============================
+    /* ========================================
        READER
-    ============================== */
+    ======================================== */
 
     #reader {
       position: fixed;
@@ -53,8 +57,9 @@
       align-items: center;
       justify-content: center;
 
-      background: #151515;
       overflow: hidden;
+
+      background: #151515;
 
       user-select: none;
       -webkit-user-select: none;
@@ -100,7 +105,7 @@
 
       object-fit: contain;
 
-      background: white;
+      background: #fff;
 
       user-select: none;
       -webkit-user-select: none;
@@ -108,9 +113,9 @@
     }
 
 
-    /* ==============================
+    /* ========================================
        DESKTOP DOUBLE PAGE
-    ============================== */
+    ======================================== */
 
     @media (min-width: 900px) {
 
@@ -122,9 +127,9 @@
     }
 
 
-    /* ==============================
+    /* ========================================
        MOBILE SINGLE PAGE
-    ============================== */
+    ======================================== */
 
     @media (max-width: 899px) {
 
@@ -140,110 +145,248 @@
     }
 
 
-    /* ==============================
-       INVISIBLE TAP AREAS
-    ============================== */
+    /* ========================================
+       INVISIBLE NAVIGATION ZONES
+    ======================================== */
 
     .tap-zone {
       position: fixed;
+
       top: 0;
       bottom: 0;
 
-      z-index: 10;
+      z-index: 20;
     }
 
 
     #prevZone {
       left: 0;
-      width: 30%;
+      width: 28%;
     }
 
 
     #centerZone {
-      left: 30%;
-      width: 40%;
+      left: 28%;
+      width: 44%;
     }
 
 
     #nextZone {
       right: 0;
-      width: 30%;
+      width: 28%;
     }
 
 
-    /* ==============================
-       MINIMAL UI
-    ============================== */
+    /* ========================================
+       LARGE SIDE ARROWS
+    ======================================== */
 
-    #ui {
+    .side-arrow {
       position: fixed;
 
-      left: 50%;
-      bottom:
-        calc(18px + env(safe-area-inset-bottom));
+      top: 50%;
 
-      transform: translateX(-50%);
+      transform: translateY(-50%);
+
+      z-index: 15;
 
       display: flex;
       align-items: center;
-      gap: 14px;
+      justify-content: center;
 
-      padding: 8px 14px;
+      width: 72px;
+      height: 120px;
 
-      border-radius: 999px;
+      color: rgba(255,255,255,0.82);
 
-      background: rgba(20, 20, 20, 0.72);
-      color: white;
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
 
-      font-size: 13px;
+      font-size: 64px;
+      font-weight: 200;
+      line-height: 1;
+
+      opacity: 0;
+
+      pointer-events: none;
+
+      transition:
+        opacity 280ms ease,
+        transform 280ms ease;
+
+      text-shadow:
+        0 1px 7px rgba(0,0,0,0.45);
+    }
+
+
+    #leftArrow {
+      left:
+        calc(12px + env(safe-area-inset-left));
+
+      transform:
+        translateY(-50%)
+        translateX(-6px);
+    }
+
+
+    #rightArrow {
+      right:
+        calc(12px + env(safe-area-inset-right));
+
+      transform:
+        translateY(-50%)
+        translateX(6px);
+    }
+
+
+    .side-arrow.visible {
+      opacity: 0.62;
+    }
+
+
+    #leftArrow.visible {
+      transform:
+        translateY(-50%)
+        translateX(0);
+    }
+
+
+    #rightArrow.visible {
+      transform:
+        translateY(-50%)
+        translateX(0);
+    }
+
+
+    /* ========================================
+       DESKTOP HOVER ARROWS
+    ======================================== */
+
+    @media (min-width: 900px) {
+
+      #prevZone:hover ~ #leftArrow {
+        opacity: 0.62;
+
+        transform:
+          translateY(-50%)
+          translateX(0);
+      }
+
+
+      #nextZone:hover ~ #rightArrow {
+        opacity: 0.62;
+
+        transform:
+          translateY(-50%)
+          translateX(0);
+      }
+
+    }
+
+
+    /* ========================================
+       MOBILE ARROWS
+    ======================================== */
+
+    @media (max-width: 899px) {
+
+      .side-arrow {
+        width: 52px;
+        height: 100px;
+
+        font-size: 52px;
+
+        color: rgba(255,255,255,0.9);
+      }
+
+
+      #leftArrow {
+        left:
+          calc(2px + env(safe-area-inset-left));
+      }
+
+
+      #rightArrow {
+        right:
+          calc(2px + env(safe-area-inset-right));
+      }
+
+
+      .side-arrow.visible {
+        opacity: 0.52;
+      }
+
+    }
+
+
+    /* ========================================
+       PAGE INDICATOR
+    ======================================== */
+
+    #pageUI {
+      position: fixed;
+
+      left: 50%;
+
+      bottom:
+        calc(18px + env(safe-area-inset-bottom));
+
+      transform:
+        translateX(-50%)
+        translateY(5px);
 
       z-index: 30;
 
-      opacity: 0;
-      pointer-events: none;
+      padding:
+        7px 13px;
 
-      transition: opacity 180ms ease;
+      border-radius: 999px;
 
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-    }
+      background:
+        rgba(20,20,20,0.68);
 
+      color:
+        rgba(255,255,255,0.92);
 
-    #ui.visible {
-      opacity: 1;
-      pointer-events: auto;
-    }
+      font-size: 12px;
 
+      letter-spacing: 0.02em;
 
-    .ui-button {
-      appearance: none;
-
-      border: 0;
-      background: transparent;
-      color: white;
-
-      font-size: 22px;
-      line-height: 1;
-
-      padding: 4px 8px;
-
-      cursor: pointer;
-    }
-
-
-    #pageIndicator {
-      min-width: 78px;
-
-      text-align: center;
       white-space: nowrap;
 
-      font-variant-numeric: tabular-nums;
+      font-variant-numeric:
+        tabular-nums;
+
+      backdrop-filter:
+        blur(8px);
+
+      -webkit-backdrop-filter:
+        blur(8px);
+
+      opacity: 0;
+
+      pointer-events: none;
+
+      transition:
+        opacity 220ms ease,
+        transform 220ms ease;
     }
 
 
-    /* ==============================
+    #pageUI.visible {
+      opacity: 1;
+
+      transform:
+        translateX(-50%)
+        translateY(0);
+    }
+
+
+    /* ========================================
        LOADING
-    ============================== */
+    ======================================== */
 
     #loading {
       position: fixed;
@@ -253,10 +396,12 @@
       align-items: center;
       justify-content: center;
 
-      color: rgba(255,255,255,.55);
+      color:
+        rgba(255,255,255,0.45);
 
-      font-size: 12px;
-      letter-spacing: .08em;
+      font-size: 11px;
+
+      letter-spacing: 0.08em;
 
       pointer-events: none;
 
@@ -288,7 +433,7 @@
   </main>
 
 
-  <!-- Invisible navigation zones -->
+  <!-- Invisible navigation -->
 
   <div
     id="prevZone"
@@ -306,28 +451,29 @@
   </div>
 
 
-  <!-- Minimal controls -->
+  <!-- Large navigation hints -->
 
-  <div id="ui">
+  <div
+    id="leftArrow"
+    class="side-arrow"
+    aria-hidden="true">
+    ‹
+  </div>
 
-    <button
-      id="prevButton"
-      class="ui-button"
-      aria-label="Previous page">
-      ‹
-    </button>
+  <div
+    id="rightArrow"
+    class="side-arrow"
+    aria-hidden="true">
+    ›
+  </div>
 
-    <div id="pageIndicator">
+
+  <!-- Page number -->
+
+  <div id="pageUI">
+    <span id="pageIndicator">
       1 / 60
-    </div>
-
-    <button
-      id="nextButton"
-      class="ui-button"
-      aria-label="Next page">
-      ›
-    </button>
-
+    </span>
   </div>
 
 
@@ -347,10 +493,12 @@
 
   const DESKTOP_BREAKPOINT = 900;
 
+  const HINT_DURATION = 2600;
+
 
   let currentPage = 1;
 
-  let uiTimer = null;
+  let hintTimer = null;
 
   let touchStartX = 0;
   let touchStartY = 0;
@@ -362,63 +510,67 @@
   const loadingElement =
     document.getElementById("loading");
 
-  const uiElement =
-    document.getElementById("ui");
+  const pageUI =
+    document.getElementById("pageUI");
 
   const indicatorElement =
     document.getElementById("pageIndicator");
 
+  const leftArrow =
+    document.getElementById("leftArrow");
+
+  const rightArrow =
+    document.getElementById("rightArrow");
+
+  const prevZone =
+    document.getElementById("prevZone");
+
+  const centerZone =
+    document.getElementById("centerZone");
+
+  const nextZone =
+    document.getElementById("nextZone");
 
 
-  /* ==============================
+
+  /* ========================================
      MODE
-  ============================== */
+  ======================================== */
 
 
-  function isDoublePageMode() {
-
-    return window.innerWidth >= DESKTOP_BREAKPOINT;
-
-  }
-
-
-
-  /* ==============================
-     FILE NAMES
-  ============================== */
-
-
-  function pageFile(pageNumber) {
+  function isDesktop() {
 
     return (
-      String(pageNumber).padStart(2, "0")
-      + ".jpg"
+      window.innerWidth
+      >=
+      DESKTOP_BREAKPOINT
     );
 
   }
 
 
 
-  /* ==============================
-     SPREAD LOGIC
+  /* ========================================
+     FILE NAMES
+  ======================================== */
 
-     Desktop:
 
-     01
-     02 + 03
-     04 + 05
-     ...
-     58 + 59
-     60
+  function pageFile(pageNumber) {
 
-     Mobile:
+    return (
+      String(pageNumber)
+        .padStart(2, "0")
+      +
+      ".jpg"
+    );
 
-     01
-     02
-     03
-     ...
-     60
-  ============================== */
+  }
+
+
+
+  /* ========================================
+     VISIBLE PAGES
+  ======================================== */
 
 
   function getVisiblePages() {
@@ -426,16 +578,20 @@
 
     /* MOBILE */
 
-    if (!isDoublePageMode()) {
+    if (!isDesktop()) {
 
-      return [currentPage];
+      return [
+        currentPage
+      ];
 
     }
 
 
-    /* COVER */
+    /* FRONT COVER */
 
-    if (currentPage <= 1) {
+    if (
+      currentPage <= 1
+    ) {
 
       return [1];
 
@@ -444,25 +600,35 @@
 
     /* BACK COVER */
 
-    if (currentPage >= TOTAL_PAGES) {
+    if (
+      currentPage >= TOTAL_PAGES
+    ) {
 
-      return [TOTAL_PAGES];
+      return [
+        TOTAL_PAGES
+      ];
 
     }
 
 
-    /* DESKTOP SPREAD */
+    /* SPREAD */
 
     let leftPage;
 
 
-    if (currentPage % 2 === 0) {
+    if (
+      currentPage % 2 === 0
+    ) {
 
-      leftPage = currentPage;
+      leftPage =
+        currentPage;
 
-    } else {
+    }
 
-      leftPage = currentPage - 1;
+    else {
+
+      leftPage =
+        currentPage - 1;
 
     }
 
@@ -471,9 +637,13 @@
       leftPage + 1;
 
 
-    if (rightPage >= TOTAL_PAGES) {
+    if (
+      rightPage >= TOTAL_PAGES
+    ) {
 
-      return [TOTAL_PAGES];
+      return [
+        TOTAL_PAGES
+      ];
 
     }
 
@@ -487,15 +657,19 @@
 
 
 
-  /* ==============================
-     CREATE IMAGE
-  ============================== */
+  /* ========================================
+     CREATE PAGE IMAGE
+  ======================================== */
 
 
-  function createPageImage(pageNumber) {
+  function createPageImage(
+    pageNumber
+  ) {
 
     const img =
-      document.createElement("img");
+      document.createElement(
+        "img"
+      );
 
 
     img.className =
@@ -503,11 +677,15 @@
 
 
     img.src =
-      pageFile(pageNumber);
+      pageFile(
+        pageNumber
+      );
 
 
     img.alt =
-      "あれこれ " + pageNumber;
+      "あれこれ "
+      +
+      pageNumber;
 
 
     img.draggable =
@@ -520,9 +698,9 @@
 
 
 
-  /* ==============================
+  /* ========================================
      RENDER
-  ============================== */
+  ======================================== */
 
 
   function render() {
@@ -535,19 +713,25 @@
       "";
 
 
-    pagesElement.classList.toggle(
-      "two-pages",
-      visiblePages.length === 2
-    );
+    pagesElement
+      .classList
+      .toggle(
+        "two-pages",
+        visiblePages.length === 2
+      );
 
 
     visiblePages.forEach(
       pageNumber => {
 
         const img =
-          createPageImage(pageNumber);
+          createPageImage(
+            pageNumber
+          );
 
-        pagesElement.appendChild(img);
+        pagesElement.appendChild(
+          img
+        );
 
       }
     );
@@ -558,22 +742,27 @@
     );
 
 
+    updateArrowAvailability();
+
+
     preloadNearbyPages(
       visiblePages
     );
 
 
-    loadingElement.classList.add(
-      "hidden"
-    );
+    loadingElement
+      .classList
+      .add(
+        "hidden"
+      );
 
   }
 
 
 
-  /* ==============================
-     INDICATOR
-  ============================== */
+  /* ========================================
+     PAGE NUMBER
+  ======================================== */
 
 
   function updateIndicator(
@@ -587,8 +776,10 @@
 
       indicatorElement.textContent =
         visiblePages[0]
-        + " / "
-        + TOTAL_PAGES;
+        +
+        " / "
+        +
+        TOTAL_PAGES;
 
     }
 
@@ -596,10 +787,14 @@
 
       indicatorElement.textContent =
         visiblePages[0]
-        + "–"
-        + visiblePages[1]
-        + " / "
-        + TOTAL_PAGES;
+        +
+        "–"
+        +
+        visiblePages[1]
+        +
+        " / "
+        +
+        TOTAL_PAGES;
 
     }
 
@@ -607,16 +802,74 @@
 
 
 
-  /* ==============================
-     NEXT
-  ============================== */
+  /* ========================================
+     ARROW AVAILABILITY
+  ======================================== */
+
+
+  function updateArrowAvailability() {
+
+    const atStart =
+      currentPage <= 1;
+
+
+    const atEnd =
+      currentPage >= TOTAL_PAGES;
+
+
+    prevZone.style.display =
+      atStart
+      ?
+      "none"
+      :
+      "block";
+
+
+    nextZone.style.display =
+      atEnd
+      ?
+      "none"
+      :
+      "block";
+
+
+    if (atStart) {
+
+      leftArrow
+        .classList
+        .remove(
+          "visible"
+        );
+
+    }
+
+
+    if (atEnd) {
+
+      rightArrow
+        .classList
+        .remove(
+          "visible"
+        );
+
+    }
+
+  }
+
+
+
+  /* ========================================
+     NEXT PAGE
+  ======================================== */
 
 
   function nextPage() {
 
 
     if (
-      currentPage >= TOTAL_PAGES
+      currentPage
+      >=
+      TOTAL_PAGES
     ) {
 
       return;
@@ -626,7 +879,7 @@
 
     /* MOBILE */
 
-    if (!isDoublePageMode()) {
+    if (!isDesktop()) {
 
       currentPage++;
 
@@ -637,9 +890,11 @@
     }
 
 
-    /* DESKTOP COVER → FIRST SPREAD */
+    /* COVER → 02 + 03 */
 
-    if (currentPage === 1) {
+    if (
+      currentPage === 1
+    ) {
 
       currentPage = 2;
 
@@ -660,11 +915,14 @@
       ];
 
 
+    /* LAST SPREAD → BACK COVER */
+
     if (
       lastVisiblePage >= 59
     ) {
 
-      currentPage = 60;
+      currentPage =
+        TOTAL_PAGES;
 
     }
 
@@ -682,9 +940,9 @@
 
 
 
-  /* ==============================
-     PREVIOUS
-  ============================== */
+  /* ========================================
+     PREVIOUS PAGE
+  ======================================== */
 
 
   function previousPage() {
@@ -701,7 +959,7 @@
 
     /* MOBILE */
 
-    if (!isDoublePageMode()) {
+    if (!isDesktop()) {
 
       currentPage--;
 
@@ -712,10 +970,12 @@
     }
 
 
-    /* DESKTOP BACK COVER */
+    /* BACK COVER → 58 + 59 */
 
     if (
-      currentPage === TOTAL_PAGES
+      currentPage
+      ===
+      TOTAL_PAGES
     ) {
 
       currentPage = 58;
@@ -734,6 +994,8 @@
     const firstVisiblePage =
       visiblePages[0];
 
+
+    /* 02 + 03 → COVER */
 
     if (
       firstVisiblePage <= 2
@@ -757,62 +1019,111 @@
 
 
 
-  /* ==============================
-     UI
-  ============================== */
+  /* ========================================
+     HINT UI
+  ======================================== */
 
 
-  function showUI() {
+  function hideHints() {
+
+    pageUI
+      .classList
+      .remove(
+        "visible"
+      );
 
 
-    uiElement.classList.add(
-      "visible"
-    );
+    leftArrow
+      .classList
+      .remove(
+        "visible"
+      );
 
 
-    clearTimeout(
-      uiTimer
-    );
-
-
-    uiTimer =
-      setTimeout(
-        () => {
-
-          uiElement.classList.remove(
-            "visible"
-          );
-
-        },
-        2600
+    rightArrow
+      .classList
+      .remove(
+        "visible"
       );
 
   }
 
 
 
-  function toggleUI() {
+  function showHints() {
+
+    clearTimeout(
+      hintTimer
+    );
+
+
+    pageUI
+      .classList
+      .add(
+        "visible"
+      );
 
 
     if (
-      uiElement.classList.contains(
-        "visible"
-      )
+      currentPage > 1
     ) {
 
-      uiElement.classList.remove(
-        "visible"
+      leftArrow
+        .classList
+        .add(
+          "visible"
+        );
+
+    }
+
+
+    if (
+      currentPage
+      <
+      TOTAL_PAGES
+    ) {
+
+      rightArrow
+        .classList
+        .add(
+          "visible"
+        );
+
+    }
+
+
+    hintTimer =
+      setTimeout(
+        hideHints,
+        HINT_DURATION
       );
 
+  }
+
+
+
+  function toggleHints() {
+
+
+    if (
+      pageUI
+        .classList
+        .contains(
+          "visible"
+        )
+    ) {
+
       clearTimeout(
-        uiTimer
+        hintTimer
       );
+
+      hideHints();
 
     }
 
     else {
 
-      showUI();
+      showHints();
 
     }
 
@@ -820,73 +1131,144 @@
 
 
 
-  /* ==============================
+  /* ========================================
      CLICK / TAP
-  ============================== */
+  ======================================== */
 
 
-  document
-    .getElementById("prevZone")
+  prevZone
     .addEventListener(
       "click",
-      previousPage
-    );
-
-
-  document
-    .getElementById("nextZone")
-    .addEventListener(
-      "click",
-      nextPage
-    );
-
-
-  document
-    .getElementById("centerZone")
-    .addEventListener(
-      "click",
-      toggleUI
-    );
-
-
-
-  document
-    .getElementById("prevButton")
-    .addEventListener(
-      "click",
-      event => {
-
-        event.stopPropagation();
+      () => {
 
         previousPage();
 
-        showUI();
-
       }
     );
 
 
-
-  document
-    .getElementById("nextButton")
+  nextZone
     .addEventListener(
       "click",
-      event => {
-
-        event.stopPropagation();
+      () => {
 
         nextPage();
 
-        showUI();
+      }
+    );
+
+
+  centerZone
+    .addEventListener(
+      "click",
+      () => {
+
+        toggleHints();
 
       }
     );
 
 
 
-  /* ==============================
+  /* ========================================
+     DESKTOP HOVER
+  ======================================== */
+
+
+  prevZone
+    .addEventListener(
+      "mouseenter",
+      () => {
+
+        if (
+          isDesktop()
+          &&
+          currentPage > 1
+        ) {
+
+          leftArrow
+            .classList
+            .add(
+              "visible"
+            );
+
+        }
+
+      }
+    );
+
+
+  prevZone
+    .addEventListener(
+      "mouseleave",
+      () => {
+
+        if (
+          isDesktop()
+        ) {
+
+          leftArrow
+            .classList
+            .remove(
+              "visible"
+            );
+
+        }
+
+      }
+    );
+
+
+  nextZone
+    .addEventListener(
+      "mouseenter",
+      () => {
+
+        if (
+          isDesktop()
+          &&
+          currentPage
+          <
+          TOTAL_PAGES
+        ) {
+
+          rightArrow
+            .classList
+            .add(
+              "visible"
+            );
+
+        }
+
+      }
+    );
+
+
+  nextZone
+    .addEventListener(
+      "mouseleave",
+      () => {
+
+        if (
+          isDesktop()
+        ) {
+
+          rightArrow
+            .classList
+            .remove(
+              "visible"
+            );
+
+        }
+
+      }
+    );
+
+
+
+  /* ========================================
      KEYBOARD
-  ============================== */
+  ======================================== */
 
 
   document.addEventListener(
@@ -895,7 +1277,9 @@
 
 
       if (
-        event.key === "ArrowRight"
+        event.key
+        ===
+        "ArrowRight"
       ) {
 
         nextPage();
@@ -904,7 +1288,9 @@
 
 
       if (
-        event.key === "ArrowLeft"
+        event.key
+        ===
+        "ArrowLeft"
       ) {
 
         previousPage();
@@ -913,12 +1299,14 @@
 
 
       if (
-        event.key === " "
+        event.key
+        ===
+        " "
       ) {
 
         event.preventDefault();
 
-        toggleUI();
+        toggleHints();
 
       }
 
@@ -927,9 +1315,9 @@
 
 
 
-  /* ==============================
+  /* ========================================
      SWIPE
-  ============================== */
+  ======================================== */
 
 
   document.addEventListener(
@@ -938,7 +1326,9 @@
 
 
       if (
-        event.touches.length !== 1
+        event.touches.length
+        !==
+        1
       ) {
 
         return;
@@ -947,11 +1337,13 @@
 
 
       touchStartX =
-        event.touches[0].clientX;
+        event.touches[0]
+          .clientX;
 
 
       touchStartY =
-        event.touches[0].clientY;
+        event.touches[0]
+          .clientY;
 
     },
     {
@@ -967,7 +1359,9 @@
 
 
       if (
-        event.changedTouches.length !== 1
+        event.changedTouches.length
+        !==
+        1
       ) {
 
         return;
@@ -976,25 +1370,30 @@
 
 
       const touchEndX =
-        event.changedTouches[0].clientX;
+        event.changedTouches[0]
+          .clientX;
 
 
       const touchEndY =
-        event.changedTouches[0].clientY;
+        event.changedTouches[0]
+          .clientY;
 
 
       const deltaX =
-        touchEndX - touchStartX;
+        touchEndX
+        -
+        touchStartX;
 
 
       const deltaY =
-        touchEndY - touchStartY;
+        touchEndY
+        -
+        touchStartY;
 
 
       /*
-        Ignore:
-        - tiny movement
-        - mostly vertical movement
+        Ignore small movement
+        and vertical gestures.
       */
 
       if (
@@ -1032,9 +1431,9 @@
 
 
 
-  /* ==============================
+  /* ========================================
      PRELOAD
-  ============================== */
+  ======================================== */
 
 
   function preloadPage(
@@ -1045,7 +1444,9 @@
     if (
       pageNumber < 1
       ||
-      pageNumber > TOTAL_PAGES
+      pageNumber
+      >
+      TOTAL_PAGES
     ) {
 
       return;
@@ -1085,16 +1486,13 @@
       first - 2
     );
 
-
     preloadPage(
       first - 1
     );
 
-
     preloadPage(
       last + 1
     );
-
 
     preloadPage(
       last + 2
@@ -1104,9 +1502,9 @@
 
 
 
-  /* ==============================
+  /* ========================================
      RESIZE
-  ============================== */
+  ======================================== */
 
 
   let resizeTimer;
@@ -1126,18 +1524,21 @@
         setTimeout(
           () => {
 
+
             /*
-              Normalize current page when
-              switching between mobile
-              and desktop.
+              If switching into desktop
+              while on an odd inner page,
+              normalize to its spread.
             */
 
             if (
-              isDoublePageMode()
+              isDesktop()
               &&
               currentPage > 1
               &&
-              currentPage < TOTAL_PAGES
+              currentPage
+              <
+              TOTAL_PAGES
               &&
               currentPage % 2 !== 0
             ) {
@@ -1146,6 +1547,8 @@
 
             }
 
+
+            hideHints();
 
             render();
 
@@ -1158,12 +1561,31 @@
 
 
 
-  /* ==============================
+  /* ========================================
      START
-  ============================== */
+  ======================================== */
 
 
   render();
+
+
+  /*
+    First-time navigation hint.
+
+    Mainly useful on phones:
+    tells the reader that the book
+    can be turned without leaving
+    permanent UI on screen.
+  */
+
+  setTimeout(
+    () => {
+
+      showHints();
+
+    },
+    450
+  );
 
 </script>
 
