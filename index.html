@@ -121,29 +121,53 @@
 
     @media (min-width: 900px) {
 
-      #pages.two-pages .page {
-        max-width: calc(50% - 5.5px);
-        max-height: 100%;
+      /*
+        Desktop book geometry.
+        The previous versions visually simulated the gutter with overlays,
+        but the two page images themselves still touched each other because
+        #pages had gap: 0.  This version creates a real 8px gutter first,
+        then shades that physical gutter.
+      */
+
+      #pages.two-pages {
+        gap: 8px;
       }
 
+      #pages.two-pages .page {
+        max-width: calc(50% - 4px);
+        max-height: 100%;
+        position: relative;
+      }
+
+      /*
+        Outer paper edges.
+        The reader background is almost black, so a black drop shadow cannot
+        describe the edge.  Use a restrained pale paper rim plus a soft light
+        falloff that remains visible against #151515.
+      */
+
       #pages.two-pages .page:first-child {
-        border-left: 1px solid rgba(255,255,255,0.30);
+        border-left: 1px solid rgba(238,238,232,0.72);
         box-shadow:
-          inset -18px 0 20px -17px rgba(0,0,0,0.38),
-          -2px 0 0 rgba(255,255,255,0.10),
-          -12px 0 22px -12px rgba(235,238,242,0.22),
-          0 10px 18px -17px rgba(235,238,242,0.08);
+          inset -10px 0 14px -13px rgba(0,0,0,0.34),
+          -1px 0 0 rgba(255,255,255,0.34),
+          -7px 0 15px -8px rgba(245,245,238,0.30);
       }
 
       #pages.two-pages .page:last-child {
-        border-right: 1px solid rgba(255,255,255,0.30);
+        border-right: 1px solid rgba(238,238,232,0.72);
         box-shadow:
-          inset 18px 0 20px -17px rgba(0,0,0,0.38),
-          2px 0 0 rgba(255,255,255,0.10),
-          12px 0 22px -12px rgba(235,238,242,0.22),
-          0 10px 18px -17px rgba(235,238,242,0.08);
+          inset 10px 0 14px -13px rgba(0,0,0,0.34),
+          1px 0 0 rgba(255,255,255,0.34),
+          7px 0 15px -8px rgba(245,245,238,0.30);
       }
 
+      /*
+        Real book gutter.
+        Width is deliberately larger than the 8px physical gap so the
+        gradient softly enters both pages.  The center itself stays dark
+        enough to remain visible on both pale and image-heavy spreads.
+      */
 
       #pages.two-pages::before {
         content: "";
@@ -151,24 +175,29 @@
         top: 0;
         bottom: 0;
         left: 50%;
-        width: 43px;
+        width: 28px;
         transform: translateX(-50%);
         pointer-events: none;
         z-index: 4;
         background:
           linear-gradient(
             to right,
-            rgba(255,255,255,0) 0%,
-            rgba(255,255,255,0.055) 14%,
-            rgba(0,0,0,0.05) 28%,
-            rgba(0,0,0,0.17) 41%,
-            rgba(0,0,0,0.25) 50%,
-            rgba(0,0,0,0.17) 59%,
-            rgba(0,0,0,0.05) 72%,
-            rgba(255,255,255,0.055) 86%,
-            rgba(255,255,255,0) 100%
+            rgba(0,0,0,0) 0%,
+            rgba(0,0,0,0.08) 25%,
+            rgba(0,0,0,0.24) 42%,
+            rgba(15,15,15,0.72) 48%,
+            rgba(15,15,15,0.82) 50%,
+            rgba(15,15,15,0.72) 52%,
+            rgba(0,0,0,0.24) 58%,
+            rgba(0,0,0,0.08) 75%,
+            rgba(0,0,0,0) 100%
           );
       }
+
+      /*
+        Fine reflected paper edge at the two sides of the gutter.
+        This prevents the center from reading as a crude black divider.
+      */
 
       #pages.two-pages::after {
         content: "";
@@ -176,7 +205,7 @@
         top: 0;
         bottom: 0;
         left: 50%;
-        width: 11px;
+        width: 12px;
         transform: translateX(-50%);
         pointer-events: none;
         z-index: 5;
@@ -184,24 +213,28 @@
           linear-gradient(
             to right,
             rgba(255,255,255,0.16) 0%,
-            rgba(255,255,255,0.05) 10%,
-            rgba(0,0,0,0.22) 28%,
-            rgba(0,0,0,0.34) 50%,
-            rgba(0,0,0,0.22) 72%,
-            rgba(255,255,255,0.05) 90%,
+            rgba(255,255,255,0.03) 18%,
+            rgba(0,0,0,0) 34%,
+            rgba(0,0,0,0) 66%,
+            rgba(255,255,255,0.03) 82%,
             rgba(255,255,255,0.16) 100%
           );
       }
 
+      /*
+        Cover / back cover shown alone.
+        Give the single sheet the same readable paper edge against the
+        dark reader background.
+      */
 
       #pages:not(.two-pages) .page {
-        border-left: 1px solid rgba(255,255,255,0.24);
-        border-right: 1px solid rgba(255,255,255,0.24);
+        border-left: 1px solid rgba(238,238,232,0.62);
+        border-right: 1px solid rgba(238,238,232,0.62);
         box-shadow:
-          -2px 0 0 rgba(255,255,255,0.08),
-          2px 0 0 rgba(255,255,255,0.08),
-          -12px 0 22px -12px rgba(235,238,242,0.18),
-          12px 0 22px -12px rgba(235,238,242,0.18);
+          -1px 0 0 rgba(255,255,255,0.25),
+          1px 0 0 rgba(255,255,255,0.25),
+          -7px 0 15px -8px rgba(245,245,238,0.24),
+          7px 0 15px -8px rgba(245,245,238,0.24);
       }
 
     }
