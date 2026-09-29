@@ -2,13 +2,18 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  >
 
   <meta name="theme-color" content="#151515">
+
   <title>あれこれ</title>
 
   <style>
+
     * {
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
@@ -17,10 +22,12 @@
     html,
     body {
       margin: 0;
+      padding: 0;
       width: 100%;
       height: 100%;
       overflow: hidden;
       background: #151515;
+
       font-family:
         -apple-system,
         BlinkMacSystemFont,
@@ -30,13 +37,13 @@
     }
 
     body {
-      touch-action: pan-y;
       overscroll-behavior: none;
     }
 
-    /* =========================
+
+    /* ==============================
        READER
-    ========================= */
+    ============================== */
 
     #reader {
       position: fixed;
@@ -53,15 +60,14 @@
       -webkit-user-select: none;
     }
 
+
     #book {
-      position: relative;
+      width: 100%;
+      height: 100%;
 
       display: flex;
       align-items: center;
       justify-content: center;
-
-      width: 100%;
-      height: 100%;
 
       padding:
         env(safe-area-inset-top)
@@ -70,16 +76,18 @@
         env(safe-area-inset-left);
     }
 
+
     #pages {
+      width: 100%;
+      height: 100%;
+
       display: flex;
       align-items: center;
       justify-content: center;
 
-      width: 100%;
-      height: 100%;
-
       gap: 0;
     }
+
 
     .page {
       display: block;
@@ -92,30 +100,49 @@
 
       object-fit: contain;
 
+      background: white;
+
       user-select: none;
       -webkit-user-select: none;
       -webkit-user-drag: none;
-
-      background: #fff;
     }
 
-    /* =========================
-       DOUBLE PAGE
-    ========================= */
 
-    body.double-page #pages {
-      max-width: 100%;
-      max-height: 100%;
+    /* ==============================
+       DESKTOP DOUBLE PAGE
+    ============================== */
+
+    @media (min-width: 900px) {
+
+      #pages.two-pages .page {
+        max-width: 50%;
+        max-height: 100%;
+      }
+
     }
 
-    body.double-page #pages.two-pages .page {
-      max-width: 50%;
-      max-height: 100%;
+
+    /* ==============================
+       MOBILE SINGLE PAGE
+    ============================== */
+
+    @media (max-width: 899px) {
+
+      #book {
+        padding: 0;
+      }
+
+      .page {
+        max-width: 100vw;
+        max-height: 100dvh;
+      }
+
     }
 
-    /* =========================
-       INVISIBLE CLICK AREAS
-    ========================= */
+
+    /* ==============================
+       INVISIBLE TAP AREAS
+    ============================== */
 
     .tap-zone {
       position: fixed;
@@ -125,27 +152,32 @@
       z-index: 10;
     }
 
+
     #prevZone {
       left: 0;
       width: 30%;
     }
+
 
     #centerZone {
       left: 30%;
       width: 40%;
     }
 
+
     #nextZone {
       right: 0;
       width: 30%;
     }
 
-    /* =========================
-       UI
-    ========================= */
+
+    /* ==============================
+       MINIMAL UI
+    ============================== */
 
     #ui {
       position: fixed;
+
       left: 50%;
       bottom:
         calc(18px + env(safe-area-inset-bottom));
@@ -171,17 +203,21 @@
       pointer-events: none;
 
       transition: opacity 180ms ease;
+
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
     }
+
 
     #ui.visible {
       opacity: 1;
       pointer-events: auto;
     }
 
+
     .ui-button {
       appearance: none;
+
       border: 0;
       background: transparent;
       color: white;
@@ -194,16 +230,20 @@
       cursor: pointer;
     }
 
+
     #pageIndicator {
-      min-width: 72px;
+      min-width: 78px;
+
       text-align: center;
       white-space: nowrap;
+
       font-variant-numeric: tabular-nums;
     }
 
-    /* =========================
+
+    /* ==============================
        LOADING
-    ========================= */
+    ============================== */
 
     #loading {
       position: fixed;
@@ -214,36 +254,26 @@
       justify-content: center;
 
       color: rgba(255,255,255,.55);
+
       font-size: 12px;
       letter-spacing: .08em;
 
       pointer-events: none;
+
       z-index: 2;
     }
+
 
     #loading.hidden {
       display: none;
     }
 
-    /* =========================
-       MOBILE
-    ========================= */
-
-    @media (max-width: 767px) {
-      #book {
-        padding: 0;
-      }
-
-      .page {
-        max-width: 100vw;
-        max-height: 100dvh;
-      }
-    }
-
   </style>
 </head>
 
+
 <body>
+
 
   <main id="reader">
 
@@ -258,13 +288,26 @@
   </main>
 
 
-  <!-- Invisible navigation -->
-  <div id="prevZone" class="tap-zone"></div>
-  <div id="centerZone" class="tap-zone"></div>
-  <div id="nextZone" class="tap-zone"></div>
+  <!-- Invisible navigation zones -->
+
+  <div
+    id="prevZone"
+    class="tap-zone">
+  </div>
+
+  <div
+    id="centerZone"
+    class="tap-zone">
+  </div>
+
+  <div
+    id="nextZone"
+    class="tap-zone">
+  </div>
 
 
-  <!-- Minimal UI -->
+  <!-- Minimal controls -->
+
   <div id="ui">
 
     <button
@@ -288,30 +331,29 @@
   </div>
 
 
+
 <script>
 
-  /* ==========================================
-     あれこれ
-     Digital Edition
-     First Edition · 2026
-  ========================================== */
+  /*
+    ==========================================
+    あれこれ
+    Digital Edition
+    First Edition · 2026
+    ==========================================
+  */
+
 
   const TOTAL_PAGES = 60;
 
-  /*
-    Image files:
+  const DESKTOP_BREAKPOINT = 900;
 
-    01.jpg
-    02.jpg
-    ...
-    60.jpg
 
-    Future audio can use:
+  let currentPage = 1;
 
-    audio/01.mp3
-    audio/02.mp3
-    ...
-  */
+  let uiTimer = null;
+
+  let touchStartX = 0;
+  let touchStartY = 0;
 
 
   const pagesElement =
@@ -327,104 +369,24 @@
     document.getElementById("pageIndicator");
 
 
-  let currentPage = 1;
 
-  let uiTimer = null;
+  /* ==============================
+     MODE
+  ============================== */
 
-  let touchStartX = 0;
-  let touchStartY = 0;
-
-  let touchEndX = 0;
-  let touchEndY = 0;
-
-
-  /* ==========================================
-     DEVICE / LAYOUT
-  ========================================== */
 
   function isDoublePageMode() {
 
-    /*
-      Mobile:
-      always single page.
+    return window.innerWidth >= DESKTOP_BREAKPOINT;
 
-      Larger screens:
-      double page only when landscape.
-    */
-
-    return (
-      window.innerWidth >= 768 &&
-      window.innerWidth > window.innerHeight
-    );
   }
 
 
-  /*
-    Spread logic:
 
-    01 = cover alone
+  /* ==============================
+     FILE NAMES
+  ============================== */
 
-    02 + 03
-    04 + 05
-    06 + 07
-    ...
-
-    58 + 59
-
-    60 = back cover alone
-  */
-
-  function getVisiblePages() {
-
-    if (!isDoublePageMode()) {
-      return [currentPage];
-    }
-
-
-    /* Cover */
-
-    if (currentPage === 1) {
-      return [1];
-    }
-
-
-    /* Back cover */
-
-    if (currentPage === TOTAL_PAGES) {
-      return [TOTAL_PAGES];
-    }
-
-
-    /*
-      If current page is odd,
-      go back to previous even page.
-    */
-
-    let leftPage =
-      currentPage % 2 === 0
-        ? currentPage
-        : currentPage - 1;
-
-
-    let rightPage =
-      leftPage + 1;
-
-
-    if (rightPage >= TOTAL_PAGES) {
-      return [TOTAL_PAGES];
-    }
-
-
-    return [
-      leftPage,
-      rightPage
-    ];
-  }
-
-
-  /* ==========================================
-     IMAGE
-  ========================================== */
 
   function pageFile(pageNumber) {
 
@@ -432,7 +394,102 @@
       String(pageNumber).padStart(2, "0")
       + ".jpg"
     );
+
   }
+
+
+
+  /* ==============================
+     SPREAD LOGIC
+
+     Desktop:
+
+     01
+     02 + 03
+     04 + 05
+     ...
+     58 + 59
+     60
+
+     Mobile:
+
+     01
+     02
+     03
+     ...
+     60
+  ============================== */
+
+
+  function getVisiblePages() {
+
+
+    /* MOBILE */
+
+    if (!isDoublePageMode()) {
+
+      return [currentPage];
+
+    }
+
+
+    /* COVER */
+
+    if (currentPage <= 1) {
+
+      return [1];
+
+    }
+
+
+    /* BACK COVER */
+
+    if (currentPage >= TOTAL_PAGES) {
+
+      return [TOTAL_PAGES];
+
+    }
+
+
+    /* DESKTOP SPREAD */
+
+    let leftPage;
+
+
+    if (currentPage % 2 === 0) {
+
+      leftPage = currentPage;
+
+    } else {
+
+      leftPage = currentPage - 1;
+
+    }
+
+
+    const rightPage =
+      leftPage + 1;
+
+
+    if (rightPage >= TOTAL_PAGES) {
+
+      return [TOTAL_PAGES];
+
+    }
+
+
+    return [
+      leftPage,
+      rightPage
+    ];
+
+  }
+
+
+
+  /* ==============================
+     CREATE IMAGE
+  ============================== */
 
 
   function createPageImage(pageNumber) {
@@ -440,23 +497,33 @@
     const img =
       document.createElement("img");
 
-    img.className = "page";
+
+    img.className =
+      "page";
+
 
     img.src =
       pageFile(pageNumber);
 
+
     img.alt =
       "あれこれ " + pageNumber;
 
-    img.draggable = false;
+
+    img.draggable =
+      false;
+
 
     return img;
+
   }
 
 
-  /* ==========================================
+
+  /* ==============================
      RENDER
-  ========================================== */
+  ============================== */
+
 
   function render() {
 
@@ -464,10 +531,8 @@
       getVisiblePages();
 
 
-    document.body.classList.toggle(
-      "double-page",
-      isDoublePageMode()
-    );
+    pagesElement.innerHTML =
+      "";
 
 
     pagesElement.classList.toggle(
@@ -476,17 +541,16 @@
     );
 
 
-    pagesElement.innerHTML = "";
+    visiblePages.forEach(
+      pageNumber => {
 
+        const img =
+          createPageImage(pageNumber);
 
-    visiblePages.forEach(pageNumber => {
+        pagesElement.appendChild(img);
 
-      const img =
-        createPageImage(pageNumber);
-
-      pagesElement.appendChild(img);
-
-    });
+      }
+    );
 
 
     updateIndicator(
@@ -506,20 +570,29 @@
   }
 
 
-  /* ==========================================
-     PAGE INDICATOR
-  ========================================== */
 
-  function updateIndicator(visiblePages) {
+  /* ==============================
+     INDICATOR
+  ============================== */
 
-    if (visiblePages.length === 1) {
+
+  function updateIndicator(
+    visiblePages
+  ) {
+
+
+    if (
+      visiblePages.length === 1
+    ) {
 
       indicatorElement.textContent =
         visiblePages[0]
         + " / "
         + TOTAL_PAGES;
 
-    } else {
+    }
+
+    else {
 
       indicatorElement.textContent =
         visiblePages[0]
@@ -533,39 +606,72 @@
   }
 
 
-  /* ==========================================
-     NAVIGATION
-  ========================================== */
+
+  /* ==============================
+     NEXT
+  ============================== */
+
 
   function nextPage() {
 
-    if (currentPage >= TOTAL_PAGES) {
+
+    if (
+      currentPage >= TOTAL_PAGES
+    ) {
+
       return;
+
     }
 
 
-    if (isDoublePageMode()) {
+    /* MOBILE */
 
-      if (currentPage === 1) {
-
-        currentPage = 2;
-
-      } else {
-
-        const visible =
-          getVisiblePages();
-
-        currentPage =
-          Math.min(
-            visible[visible.length - 1] + 1,
-            TOTAL_PAGES
-          );
-
-      }
-
-    } else {
+    if (!isDoublePageMode()) {
 
       currentPage++;
+
+      render();
+
+      return;
+
+    }
+
+
+    /* DESKTOP COVER → FIRST SPREAD */
+
+    if (currentPage === 1) {
+
+      currentPage = 2;
+
+      render();
+
+      return;
+
+    }
+
+
+    const visiblePages =
+      getVisiblePages();
+
+
+    const lastVisiblePage =
+      visiblePages[
+        visiblePages.length - 1
+      ];
+
+
+    if (
+      lastVisiblePage >= 59
+    ) {
+
+      currentPage = 60;
+
+    }
+
+    else {
+
+      currentPage =
+        lastVisiblePage + 1;
 
     }
 
@@ -573,45 +679,74 @@
     render();
 
   }
+
+
+
+  /* ==============================
+     PREVIOUS
+  ============================== */
 
 
   function previousPage() {
 
-    if (currentPage <= 1) {
+
+    if (
+      currentPage <= 1
+    ) {
+
       return;
+
     }
 
 
-    if (isDoublePageMode()) {
+    /* MOBILE */
 
-      const visible =
-        getVisiblePages();
-
-
-      if (visible[0] <= 2) {
-
-        currentPage = 1;
-
-      } else if (
-        currentPage === TOTAL_PAGES
-      ) {
-
-        currentPage =
-          TOTAL_PAGES - 2;
-
-      } else {
-
-        currentPage =
-          Math.max(
-            visible[0] - 2,
-            1
-          );
-
-      }
-
-    } else {
+    if (!isDoublePageMode()) {
 
       currentPage--;
+
+      render();
+
+      return;
+
+    }
+
+
+    /* DESKTOP BACK COVER */
+
+    if (
+      currentPage === TOTAL_PAGES
+    ) {
+
+      currentPage = 58;
+
+      render();
+
+      return;
+
+    }
+
+
+    const visiblePages =
+      getVisiblePages();
+
+
+    const firstVisiblePage =
+      visiblePages[0];
+
+
+    if (
+      firstVisiblePage <= 2
+    ) {
+
+      currentPage = 1;
+
+    }
+
+    else {
+
+      currentPage =
+        firstVisiblePage - 2;
 
     }
 
@@ -621,11 +756,14 @@
   }
 
 
-  /* ==========================================
+
+  /* ==============================
      UI
-  ========================================== */
+  ============================== */
+
 
   function showUI() {
+
 
     uiElement.classList.add(
       "visible"
@@ -638,18 +776,23 @@
 
 
     uiTimer =
-      setTimeout(() => {
+      setTimeout(
+        () => {
 
-        uiElement.classList.remove(
-          "visible"
-        );
+          uiElement.classList.remove(
+            "visible"
+          );
 
-      }, 2600);
+        },
+        2600
+      );
 
   }
 
 
+
   function toggleUI() {
+
 
     if (
       uiElement.classList.contains(
@@ -665,7 +808,9 @@
         uiTimer
       );
 
-    } else {
+    }
+
+    else {
 
       showUI();
 
@@ -674,9 +819,11 @@
   }
 
 
-  /* ==========================================
+
+  /* ==============================
      CLICK / TAP
-  ========================================== */
+  ============================== */
+
 
   document
     .getElementById("prevZone")
@@ -702,6 +849,7 @@
     );
 
 
+
   document
     .getElementById("prevButton")
     .addEventListener(
@@ -716,6 +864,7 @@
 
       }
     );
+
 
 
   document
@@ -734,13 +883,16 @@
     );
 
 
-  /* ==========================================
+
+  /* ==============================
      KEYBOARD
-  ========================================== */
+  ============================== */
+
 
   document.addEventListener(
     "keydown",
     event => {
+
 
       if (
         event.key === "ArrowRight"
@@ -759,27 +911,44 @@
 
       }
 
+
+      if (
+        event.key === " "
+      ) {
+
+        event.preventDefault();
+
+        toggleUI();
+
+      }
+
     }
   );
 
 
-  /* ==========================================
+
+  /* ==============================
      SWIPE
-  ========================================== */
+  ============================== */
+
 
   document.addEventListener(
     "touchstart",
     event => {
 
+
       if (
         event.touches.length !== 1
       ) {
+
         return;
+
       }
 
 
       touchStartX =
         event.touches[0].clientX;
+
 
       touchStartY =
         event.touches[0].clientY;
@@ -791,50 +960,65 @@
   );
 
 
+
   document.addEventListener(
     "touchend",
     event => {
 
+
       if (
         event.changedTouches.length !== 1
       ) {
+
         return;
+
       }
 
 
-      touchEndX =
+      const touchEndX =
         event.changedTouches[0].clientX;
 
-      touchEndY =
+
+      const touchEndY =
         event.changedTouches[0].clientY;
 
 
       const deltaX =
         touchEndX - touchStartX;
 
+
       const deltaY =
         touchEndY - touchStartY;
 
 
       /*
-        Ignore small movement
-        and mostly vertical gestures.
+        Ignore:
+        - tiny movement
+        - mostly vertical movement
       */
 
       if (
-        Math.abs(deltaX) < 45 ||
-        Math.abs(deltaX) <
+        Math.abs(deltaX) < 45
+        ||
+        Math.abs(deltaX)
+        <
         Math.abs(deltaY)
       ) {
+
         return;
+
       }
 
 
-      if (deltaX < 0) {
+      if (
+        deltaX < 0
+      ) {
 
         nextPage();
 
-      } else {
+      }
+
+      else {
 
         previousPage();
 
@@ -847,35 +1031,49 @@
   );
 
 
-  /* ==========================================
-     PRELOAD
-  ========================================== */
 
-  function preloadPage(pageNumber) {
+  /* ==============================
+     PRELOAD
+  ============================== */
+
+
+  function preloadPage(
+    pageNumber
+  ) {
+
 
     if (
-      pageNumber < 1 ||
+      pageNumber < 1
+      ||
       pageNumber > TOTAL_PAGES
     ) {
+
       return;
+
     }
 
 
     const img =
       new Image();
 
+
     img.src =
-      pageFile(pageNumber);
+      pageFile(
+        pageNumber
+      );
 
   }
+
 
 
   function preloadNearbyPages(
     visiblePages
   ) {
 
+
     const first =
       visiblePages[0];
+
 
     const last =
       visiblePages[
@@ -887,13 +1085,16 @@
       first - 2
     );
 
+
     preloadPage(
       first - 1
     );
 
+
     preloadPage(
       last + 1
     );
+
 
     preloadPage(
       last + 2
@@ -902,9 +1103,11 @@
   }
 
 
-  /* ==========================================
-     RESIZE / ROTATION
-  ========================================== */
+
+  /* ==============================
+     RESIZE
+  ============================== */
+
 
   let resizeTimer;
 
@@ -913,6 +1116,7 @@
     "resize",
     () => {
 
+
       clearTimeout(
         resizeTimer
       );
@@ -920,7 +1124,32 @@
 
       resizeTimer =
         setTimeout(
-          render,
+          () => {
+
+            /*
+              Normalize current page when
+              switching between mobile
+              and desktop.
+            */
+
+            if (
+              isDoublePageMode()
+              &&
+              currentPage > 1
+              &&
+              currentPage < TOTAL_PAGES
+              &&
+              currentPage % 2 !== 0
+            ) {
+
+              currentPage--;
+
+            }
+
+
+            render();
+
+          },
           120
         );
 
@@ -928,9 +1157,11 @@
   );
 
 
-  /* ==========================================
+
+  /* ==============================
      START
-  ========================================== */
+  ============================== */
+
 
   render();
 
