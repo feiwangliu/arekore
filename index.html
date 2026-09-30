@@ -151,82 +151,17 @@
         This is deliberately not a black drop shadow.
       */
 
+      /* Natural center fold: no divider line, no physical gap. */
+      #pages.two-pages::before,
+      #pages.two-pages::after { content: none; }
+
       #pages.two-pages .page:first-child {
         border-left: 2px solid rgba(255,255,248,0.78);
-        box-shadow:
-          -2px 0 0 rgba(210,210,202,0.38),
-          -10px 0 22px rgba(255,255,248,0.13);
+        box-shadow: -2px 0 0 rgba(210,210,202,0.38), -10px 0 22px rgba(255,255,248,0.13), inset -14px 0 14px -14px rgba(55,48,38,0.20);
       }
-
       #pages.two-pages .page:last-child {
         border-right: 2px solid rgba(255,255,248,0.78);
-        box-shadow:
-          2px 0 0 rgba(210,210,202,0.38),
-          10px 0 22px rgba(255,255,248,0.13);
-      }
-
-      /*
-        52px continuous spine curvature.
-        The wide transparent shoulders darken the INNER PART OF EACH JPG,
-        so image-heavy pages still visibly bend into the binding.
-      */
-
-      #pages.two-pages::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 50%;
-        width: 52px;
-        transform: translateX(-50%);
-        pointer-events: none;
-        z-index: 4;
-        background: linear-gradient(
-          to right,
-          rgba(0,0,0,0) 0%,
-          rgba(0,0,0,0.05) 10%,
-          rgba(0,0,0,0.14) 24%,
-          rgba(0,0,0,0.30) 38%,
-          rgba(0,0,0,0.48) 46%,
-          rgba(24,22,19,0.72) 49%,
-          rgba(12,11,10,0.82) 50%,
-          rgba(24,22,19,0.72) 51%,
-          rgba(0,0,0,0.48) 54%,
-          rgba(0,0,0,0.30) 62%,
-          rgba(0,0,0,0.14) 76%,
-          rgba(0,0,0,0.05) 90%,
-          rgba(0,0,0,0) 100%
-        );
-      }
-
-      /*
-        Fine reflected paper shoulders beside the deepest part of the spine.
-        This is what keeps the gutter from looking like a black divider.
-      */
-
-      #pages.two-pages::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 50%;
-        width: 30px;
-        transform: translateX(-50%);
-        pointer-events: none;
-        z-index: 5;
-        background: linear-gradient(
-          to right,
-          rgba(255,255,246,0.18) 0%,
-          rgba(255,255,246,0.08) 16%,
-          rgba(255,255,246,0) 31%,
-          rgba(0,0,0,0) 43%,
-          rgba(0,0,0,0.24) 49%,
-          rgba(0,0,0,0.24) 51%,
-          rgba(0,0,0,0) 57%,
-          rgba(255,255,246,0) 69%,
-          rgba(255,255,246,0.08) 84%,
-          rgba(255,255,246,0.18) 100%
-        );
+        box-shadow: 2px 0 0 rgba(210,210,202,0.38), 10px 0 22px rgba(255,255,248,0.13), inset 14px 0 14px -14px rgba(55,48,38,0.20);
       }
 
       /* Cover / back cover shown alone. */
