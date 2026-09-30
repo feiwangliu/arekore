@@ -430,7 +430,35 @@
       display: none;
     }
 
-  </style>
+  
+/* CENTERFOLD — warm neutral visual buffer between independent page designs */
+    #pages.two-pages {
+      gap: 8px;
+      position: relative;
+      background: #e7e1d7;
+    }
+
+    /* No central line / groove / highlight overlay */
+    #pages.two-pages::before,
+    #pages.two-pages::after {
+      content: none !important;
+      display: none !important;
+    }
+
+    /* Each page remains flat; only a soft inner-edge tonal transition */
+    #pages.two-pages .page:first-child {
+      box-shadow:
+        inset -16px 0 18px -18px rgba(74, 65, 54, 0.32),
+        0 0 1px rgba(255,255,255,0.20);
+    }
+
+    #pages.two-pages .page:last-child {
+      box-shadow:
+        inset 16px 0 18px -18px rgba(74, 65, 54, 0.32),
+        0 0 1px rgba(255,255,255,0.20);
+    }
+
+</style>
 </head>
 
 
