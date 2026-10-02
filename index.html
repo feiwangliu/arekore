@@ -431,32 +431,44 @@
     }
 
   
-/* CENTERFOLD — warm neutral visual buffer between independent page designs */
-    #pages.two-pages {
-      gap: 8px;
-      position: relative;
-      background: #e7e1d7;
-    }
 
-    /* No central line / groove / highlight overlay */
-    #pages.two-pages::before,
-    #pages.two-pages::after {
-      content: none !important;
-      display: none !important;
-    }
-
-    /* Each page remains flat; only a soft inner-edge tonal transition */
-    #pages.two-pages .page:first-child {
-      box-shadow:
-        inset -16px 0 18px -18px rgba(74, 65, 54, 0.32),
-        0 0 1px rgba(255,255,255,0.20);
-    }
-
-    #pages.two-pages .page:last-child {
-      box-shadow:
-        inset 16px 0 18px -18px rgba(74, 65, 54, 0.32),
-        0 0 1px rgba(255,255,255,0.20);
-    }
+/* AREKORE DESKTOP OPEN-BOOK V4 — LOCKED */
+@media (min-width: 900px) {
+  #pages.two-pages {
+    gap: 0 !important;
+    position: relative;
+    isolation: isolate;
+    background: transparent !important;
+    outline: 5px solid rgb(239,236,229);
+    outline-offset: 0;
+    box-shadow: 0 0 30px rgba(0,0,0,.57);
+  }
+  #pages.two-pages .page:first-child,
+  #pages.two-pages .page:last-child {
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+  #pages.two-pages::before {
+    content: "" !important;
+    display: block !important;
+    position: absolute;
+    z-index: 5;
+    pointer-events: none;
+    top: 0; bottom: 0; left: 50%;
+    width: 72px;
+    transform: translateX(-50%);
+    background: linear-gradient(to right,
+      rgba(62,56,49,0) 0%,
+      rgba(62,56,49,.018) 22%,
+      rgba(62,56,49,.055) 48%,
+      rgba(62,56,49,.133) 50%,
+      rgba(62,56,49,.055) 52%,
+      rgba(62,56,49,.018) 78%,
+      rgba(62,56,49,0) 100%);
+    filter: blur(3.2px);
+  }
+  #pages.two-pages::after { content:none !important; display:none !important; }
+}
 
 </style>
 </head>
