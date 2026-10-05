@@ -408,6 +408,94 @@
     }
 
 
+
+
+    /* ========================================
+       AUDIOBOOK V1 · P4 / P5
+    ======================================== */
+
+    #audioUI {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: calc(58px + env(safe-area-inset-bottom));
+      z-index: 31;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 220ms ease;
+    }
+
+    #audioUI.visible { opacity: 1; }
+
+    .audio-button {
+      position: fixed;
+      bottom: calc(58px + env(safe-area-inset-bottom));
+      width: 42px;
+      height: 42px;
+      border: 0;
+      border-radius: 50%;
+      background: rgba(20,20,20,0.68);
+      color: rgba(255,255,255,0.94);
+      font-size: 15px;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      cursor: pointer;
+      pointer-events: auto;
+      display: none;
+    }
+
+    #audioLeft { left: calc(50% - 72px); }
+    #audioRight { left: calc(50% + 30px); }
+
+    @media (max-width: 899px) {
+      #audioLeft,
+      #audioRight {
+        left: 50%;
+        transform: translateX(-50%);
+      }
+    }
+
+
+    /* ========================================
+       BACK TO COVER
+    ======================================== */
+
+    #backToCover {
+      position: fixed;
+      left: 50%;
+      bottom: calc(24px + env(safe-area-inset-bottom));
+      transform: translateX(-50%) translateY(4px);
+      z-index: 32;
+      padding: 8px 14px;
+      border: 0;
+      border-radius: 999px;
+      background: rgba(20,20,20,0.58);
+      color: rgba(255,255,255,0.90);
+      font: inherit;
+      font-size: 12px;
+      letter-spacing: 0.02em;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 220ms ease, transform 220ms ease, background 180ms ease;
+    }
+
+    #backToCover.visible {
+      opacity: 0.78;
+      pointer-events: auto;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    #backToCover:hover,
+    #backToCover:focus-visible {
+      opacity: 1;
+      background: rgba(20,20,20,0.76);
+      outline: none;
+    }
+
+
     /* ========================================
        LOADING
     ======================================== */
@@ -500,6 +588,20 @@
   </div>
 
 
+  <!-- Audiobook controls -->
+
+  <div id="audioUI">
+    <button id="audioLeft" class="audio-button" type="button" aria-label="朗読を再生">▶</button>
+    <button id="audioRight" class="audio-button" type="button" aria-label="朗読を再生">▶</button>
+  </div>
+
+
+
+  <!-- Back cover: return to front cover -->
+  <button id="backToCover" type="button" aria-label="表紙に戻る">
+    ↶ 表紙に戻る
+  </button>
+
 
 <script>
 
@@ -518,6 +620,49 @@
 
   const HINT_DURATION = 2600;
 
+  const TTS_ENDPOINT =
+    "https://japanese-reset-tts-prototype-842886308739.asia-northeast1.run.app";
+
+  const AUDIOBOOK_PAGES = {
+    4: {
+      lines: [
+        "ニールくん、昨日何時に寝た？",
+        "8時！",
+        "えー！早い！",
+        "毎日8時ごろ寝るよ。",
+        "じゃあ、朝は何時に起きるの？",
+        "6時！",
+        "学校の前に朝ごはんを食べるよ。",
+        "早っ！",
+        "哲也くん、日曜日BFA行く？",
+        "うん、行くよ！",
+        "何時からだっけ？",
+        "えーっと……何時だっけ？",
+        "うん。ママに聞く！",
+        "ぼくもママに聞いてみる！",
+        "じゃあ、日曜日に！",
+        "うん！楽しみ！"
+      ]
+    },
+    5: {
+      lines: [
+        "ちょっとドキドキする……",
+        "こっちで合ってる。",
+        "次だ！",
+        "ママ！",
+        "一人で帰れたよ！",
+        "おかえり！",
+        "あれ？ママ、まだかな。",
+        "もしもし、ママ？今、駅に着いたよ。",
+        "ごめん！あとちょっと！",
+        "あ、ここにいる。",
+        "ママ！",
+        "はるかー！"
+      ]
+    }
+  };
+
+
 
   let currentPage = 1;
 
@@ -525,6 +670,12 @@
 
   let touchStartX = 0;
   let touchStartY = 0;
+
+  let activeAudio = null;
+  let activeAudioPage = null;
+  let activeAudioButton = null;
+  const audioCache = new Map();
+
 
 
   const pagesElement =
@@ -553,6 +704,19 @@
 
   const nextZone =
     document.getElementById("nextZone");
+
+  const audioUI =
+    document.getElementById("audioUI");
+
+  const audioLeft =
+    document.getElementById("audioLeft");
+
+  const audioRight =
+    document.getElementById("audioRight");
+
+  const backToCover =
+    document.getElementById("backToCover");
+
 
 
 
@@ -589,6 +753,149 @@
 
   }
 
+
+
+
+
+  /* ========================================
+     AUDIOBOOK TTS
+  ======================================== */
+
+  function audiobookText(pageNumber) {
+    const page = AUDIOBOOK_PAGES[pageNumber];
+    return page ? page.lines.join("\n") : null;
+  }
+
+  async function fetchPageAudio(pageNumber) {
+    if (audioCache.has(pageNumber)) {
+      return audioCache.get(pageNumber);
+    }
+
+    const text = audiobookText(pageNumber);
+    if (!text) throw new Error("No audiobook text for this page.");
+
+    const response = await fetch(TTS_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        passageId: "arekore-p" + String(pageNumber).padStart(2, "0"),
+        clips: [{ clipId: "full", kind: "full", text }]
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error("TTS request failed: " + response.status);
+    }
+
+    const data = await response.json();
+    if (!data.clips || !data.clips.length) {
+      throw new Error("No audio returned.");
+    }
+
+    const clip = data.clips[0];
+    const base64 = clip.audioBase64 || clip.audio || clip.base64;
+    if (!base64) throw new Error("Audio data missing.");
+
+    const mimeType = data.mimeType || clip.mimeType || "audio/mpeg";
+    const audioURL = "data:" + mimeType + ";base64," + base64;
+    audioCache.set(pageNumber, audioURL);
+    return audioURL;
+  }
+
+  function resetAudioButton() {
+    if (activeAudioButton) activeAudioButton.textContent = "▶";
+  }
+
+  function stopAudio() {
+    if (activeAudio) {
+      activeAudio.pause();
+      activeAudio.currentTime = 0;
+    }
+    resetAudioButton();
+    activeAudio = null;
+    activeAudioPage = null;
+    activeAudioButton = null;
+  }
+
+  async function togglePageAudio(pageNumber, button) {
+    if (activeAudio && activeAudioPage === pageNumber) {
+      if (!activeAudio.paused) {
+        activeAudio.pause();
+        button.textContent = "▶";
+        return;
+      }
+      await activeAudio.play();
+      button.textContent = "Ⅱ";
+      return;
+    }
+
+    stopAudio();
+    button.textContent = "…";
+
+    try {
+      const audioURL = await fetchPageAudio(pageNumber);
+      const audio = new Audio(audioURL);
+      activeAudio = audio;
+      activeAudioPage = pageNumber;
+      activeAudioButton = button;
+
+      audio.addEventListener("ended", () => {
+        button.textContent = "▶";
+        activeAudio = null;
+        activeAudioPage = null;
+        activeAudioButton = null;
+      }, { once: true });
+
+      await audio.play();
+      button.textContent = "Ⅱ";
+    } catch (error) {
+      console.error("Audiobook error:", error);
+      button.textContent = "▶";
+      alert("音声を再生できませんでした。");
+    }
+  }
+
+  function updateAudioControls(visiblePages) {
+    audioLeft.style.display = "none";
+    audioRight.style.display = "none";
+    audioLeft.onclick = null;
+    audioRight.onclick = null;
+
+    if (!visiblePages.some(pageNumber => AUDIOBOOK_PAGES[pageNumber])) {
+      audioUI.classList.remove("visible");
+      return;
+    }
+
+    if (visiblePages.length === 1) {
+      const pageNumber = visiblePages[0];
+      if (!AUDIOBOOK_PAGES[pageNumber]) return;
+      audioLeft.style.display = "block";
+      audioLeft.onclick = event => {
+        event.stopPropagation();
+        togglePageAudio(pageNumber, audioLeft);
+      };
+      return;
+    }
+
+    const leftPage = visiblePages[0];
+    const rightPage = visiblePages[1];
+
+    if (AUDIOBOOK_PAGES[leftPage]) {
+      audioLeft.style.display = "block";
+      audioLeft.onclick = event => {
+        event.stopPropagation();
+        togglePageAudio(leftPage, audioLeft);
+      };
+    }
+
+    if (AUDIOBOOK_PAGES[rightPage]) {
+      audioRight.style.display = "block";
+      audioRight.onclick = event => {
+        event.stopPropagation();
+        togglePageAudio(rightPage, audioRight);
+      };
+    }
+  }
 
 
   /* ========================================
@@ -728,6 +1035,8 @@
 
   function render() {
 
+    stopAudio();
+
     const visiblePages =
       getVisiblePages();
 
@@ -773,6 +1082,21 @@
     updateIndicator(
       visiblePages
     );
+
+
+    updateAudioControls(
+      visiblePages
+    );
+
+
+    backToCover
+      .classList
+      .toggle(
+        "visible",
+        visiblePages.length === 1
+        &&
+        visiblePages[0] === TOTAL_PAGES
+      );
 
 
     updateArrowAvailability();
@@ -1211,6 +1535,13 @@
         "visible"
       );
 
+
+    audioUI
+      .classList
+      .remove(
+        "visible"
+      );
+
   }
 
 
@@ -1227,6 +1558,19 @@
       .add(
         "visible"
       );
+
+
+    if (
+      getVisiblePages().some(
+        pageNumber => AUDIOBOOK_PAGES[pageNumber]
+      )
+    ) {
+      audioUI
+        .classList
+        .add(
+          "visible"
+        );
+    }
 
 
     if (
@@ -1404,6 +1748,18 @@
       if (isDesktop()) {
         rightArrow.classList.remove("visible");
       }
+    }
+  );
+
+
+  backToCover.addEventListener(
+    "click",
+    event => {
+      event.stopPropagation();
+      clearTimeout(hintTimer);
+      hideHints();
+      currentPage = 1;
+      render();
     }
   );
 
