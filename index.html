@@ -613,6 +613,14 @@ html,body,#reader { background:var(--canvas); color:var(--ink); }
   #progressSlider {flex:1 1 auto;width:auto;min-width:70px;max-width:200px;}
 }
 
+
+/* V6 sizing repair: each sheet owns its image's full available area. */
+#book { padding:12px 64px 24px; }
+body:has(#audioUI.visible) #book {padding-bottom:52px;}
+#pages .page-sheet { padding:10px!important; flex:0 0 auto; }
+#pages .page-sheet .page { width:100%!important; height:100%!important; max-width:100%!important; max-height:100%!important; object-fit:contain; }
+@media(max-width:899px) { #book {padding:8px 8px 20px;} #pages .page-sheet {padding:8px!important;} }
+
 </style>
 </head>
 
@@ -1269,7 +1277,26 @@ html,body,#reader { background:var(--canvas); color:var(--ink); }
   ======================================== */
 
 
+
+  function fitSheets() {
+    const sheets = [...pagesElement.querySelectorAll('.page-sheet')];
+    if (!sheets.length) return;
+    const area = pagesElement.getBoundingClientRect();
+    const border = isDesktop() ? 10 : 8;
+    const ratios = sheets.map(sheet => {
+      const img = sheet.querySelector('img');
+      return img.naturalWidth && img.naturalHeight ? img.naturalWidth / img.naturalHeight : 2079 / 2953;
+    });
+    const height = Math.max(1, Math.min(area.height - 2 * border,
+      (area.width - sheets.length * 2 * border) / ratios.reduce((a,b) => a+b, 0)));
+    sheets.forEach((sheet, i) => {
+      sheet.style.width = (height * ratios[i] + 2 * border) + 'px';
+      sheet.style.height = (height + 2 * border) + 'px';
+    });
+  }
+
   function positionArrows() {
+    fitSheets();
 
     const visibleImages =
       pagesElement.querySelectorAll(".page");
