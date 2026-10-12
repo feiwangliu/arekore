@@ -8,7 +8,7 @@
     content="width=device-width, initial-scale=1, viewport-fit=cover"
   >
 
-  <meta name="theme-color" content="#151515">
+  <meta name="theme-color" content="#eef1f2">
 
   <title>あれこれ</title>
 
@@ -524,11 +524,79 @@
     #loading.hidden {
       display: none;
     }
+
+/* ===== AREKORE · EDITORIAL READER V2 (visual layer only) ===== */
+:root { --ink:#263943; --muted:#788c98; --accent:#718e9e; --canvas:#eef1f2; --line:#e3e8eb; --top:56px; --bottom:62px; }
+html,body,#reader { background:var(--canvas); color:var(--ink); }
+#reader { inset:var(--top) 0 var(--bottom); overflow:hidden; background:radial-gradient(ellipse at 50% 45%, #f8fafb 0%, #edf0f2 78%); }
+#book { padding:12px 66px; }
+#pages { width:100%; height:100%; filter:drop-shadow(0 12px 15px rgba(43,59,68,.13)); }
+.page { box-shadow:none; }
+@media (min-width:900px) {
+ #book { padding:12px 75px; }
+ #pages { height:100%; }
+ #pages.two-pages .page { max-height:calc(100dvh - var(--top) - var(--bottom) - 24px); border:0!important; box-shadow:none!important; }
+ #pages.two-pages .page:first-child { box-shadow:inset -8px 0 11px -10px rgba(40,50,55,.25)!important; }
+ #pages.two-pages .page:last-child { box-shadow:inset 8px 0 11px -10px rgba(40,50,55,.25)!important; }
+ #pages:not(.two-pages) .page { max-height:calc(100dvh - var(--top) - var(--bottom) - 24px); border:0!important; box-shadow:0 10px 22px rgba(43,59,68,.12)!important; }
+}
+@media (max-width:899px) {
+ :root { --top:48px; --bottom:52px; }
+ #book { padding:6px 7px; }
+ #pages .page { max-height:calc(100dvh - var(--top) - var(--bottom) - 12px); max-width:100%; }
+}
+#readerHeader { position:fixed; inset:0 0 auto; height:var(--top); z-index:60; display:flex; align-items:center; justify-content:space-between; padding:0 clamp(14px,3vw,36px); background:rgba(255,255,255,.94); border-bottom:1px solid var(--line); }
+.brand { display:flex; align-items:baseline; gap:13px; white-space:nowrap; }
+.brand strong { font-size:17px; letter-spacing:.06em; font-weight:700; }
+.brand small { font-size:10px; color:#94a3ae; letter-spacing:.12em; }
+.headerTools { display:flex; gap:6px; align-items:center; }
+.toolButton { border:0; background:transparent; color:#526a78; border-radius:50%; height:36px; width:36px; display:grid; place-items:center; cursor:pointer; transition:background .18s,transform .18s; }
+.toolButton:hover,.toolButton:focus-visible { background:#eaf0f3; outline:none; }
+.toolButton:active { transform:scale(.94); }
+.toolButton svg { width:19px; height:19px; stroke:currentColor; fill:none; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+#readerFooter { position:fixed; inset:auto 0 0; height:var(--bottom); z-index:60; display:flex; align-items:center; gap:24px; padding:0 clamp(16px,3vw,38px); background:rgba(255,255,255,.95); border-top:1px solid var(--line); }
+.footerLabel { display:flex; align-items:center; gap:9px; color:#637987; font-size:12px; white-space:nowrap; }
+.footerLabel svg { width:17px; height:17px; stroke:currentColor; fill:none; stroke-width:1.6; }
+#progressSlider { flex:1; min-width:30px; height:3px; border-radius:10px; appearance:none; -webkit-appearance:none; background:linear-gradient(to right,var(--accent) 0%,var(--accent) var(--progress,0%),#e1e6e9 var(--progress,0%),#e1e6e9 100%); cursor:pointer; outline:none; }
+#progressSlider::-webkit-slider-thumb { appearance:none; width:10px; height:10px; border-radius:50%; background:var(--accent); box-shadow:0 0 0 4px #fff; }
+#progressSlider::-moz-range-thumb { width:10px; height:10px; border:0; border-radius:50%; background:var(--accent); }
+#pageUI { position:static; transform:none!important; opacity:1!important; background:none; backdrop-filter:none; color:#526b7a; font-size:12px; padding:0; pointer-events:auto; z-index:auto; order:2; }
+#pageIndicator { font-variant-numeric:tabular-nums; letter-spacing:.045em; }
+#progressSlider { order:1; }
+.footerLabel { order:0; }
+.side-arrow { width:43px!important; height:43px!important; border-radius:50%; background:rgba(255,255,255,.94); box-shadow:0 3px 15px rgba(47,64,73,.13); color:#536d7c!important; font-family:Arial,sans-serif; font-size:36px!important; line-height:1; text-shadow:none; opacity:0; transition:opacity .2s,transform .2s; }
+.side-arrow.visible { opacity:.95!important; }
+#leftArrow,#rightArrow { z-index:25; }
+.tap-zone { top:var(--top); bottom:var(--bottom); }
+#audioUI { position:fixed; bottom:calc(var(--bottom) + 12px); left:0; right:0; z-index:40; }
+.audio-button { bottom:calc(var(--bottom) + 12px); width:40px; height:40px; background:rgba(255,255,255,.97); color:#506e7d; border:1px solid #e1e7e9; box-shadow:0 3px 13px rgba(47,64,73,.12); font-size:15px; }
+#audioLeft { left:calc(50% - 56px); } #audioRight { left:calc(50% + 16px); }
+#backToCover { bottom:calc(var(--bottom) + 18px); background:#fff; color:#526b7a; border:1px solid #dce5e9; box-shadow:0 4px 15px rgba(47,64,73,.12); }
+#backToCover.visible { opacity:1; } #backToCover:hover { background:#eef4f6; }
+#loading { color:#788d98; }
+@media(max-width:899px) {
+ .brand strong { font-size:15px; } .brand small { font-size:8px; letter-spacing:.07em; }
+ #readerFooter { gap:14px; padding:0 16px; }
+ .footerLabel { display:none; }
+ #pageUI { min-width:65px; text-align:right; }
+ .side-arrow { width:34px!important; height:34px!important; font-size:30px!important; }
+ #audioLeft,#audioRight { left:50%; transform:translateX(-50%); }
+}
+@media(max-width:360px) { .brand small { display:none; } }
+
 </style>
 </head>
 
 
 <body>
+<header id="readerHeader" aria-label="Reader toolbar">
+  <div class="brand"><strong>あれこれ</strong><small>DIGITAL EDITION · 2026</small></div>
+  <div class="headerTools">
+    <button class="toolButton" id="audioInfoButton" type="button" aria-label="朗読について" title="朗読について"><svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4Z"/><path d="M17 9a5 5 0 0 1 0 6M19 6a9 9 0 0 1 0 12"/></svg></button>
+    <button class="toolButton" id="fullscreenButton" type="button" aria-label="全画面表示" title="全画面表示"><svg viewBox="0 0 24 24"><path d="M8 3H3v5M16 3h5v5M3 16v5h5M21 16v5h-5"/></svg></button>
+  </div>
+</header>
+
 
 
   <main id="reader">
@@ -581,12 +649,17 @@
 
   <!-- Page number -->
 
+  <footer id="readerFooter" aria-label="Reading progress">
+    <div class="footerLabel"><svg viewBox="0 0 24 24"><path d="M12 6c-3-2-6-2-9-1v14c3-1 6-1 9 1 3-2 6-2 9-1V5c-3-1-6-1-9 1Zm0 0v14"/></svg> Reading</div>
+    <input id="progressSlider" type="range" min="1" max="60" value="1" aria-label="ページを選択">
   <div id="pageUI">
     <span id="pageIndicator">
       1 / 60
     </span>
   </div>
 
+
+  </footer>
 
   <!-- Audiobook controls -->
 
@@ -1082,11 +1155,13 @@
     updateIndicator(
       visiblePages
     );
+    updateProgress(visiblePages);
 
 
     updateAudioControls(
       visiblePages
     );
+    audioUI.classList.toggle("visible", visiblePages.some(n => AUDIOBOOK_PAGES[n]));
 
 
     backToCover
@@ -2062,6 +2137,33 @@
   );
 
 
+
+
+  /* Editorial reader controls: independent of the existing page/audio logic. */
+  const progressSlider = document.getElementById("progressSlider");
+  function updateProgress(visiblePages) {
+    const first = visiblePages[0];
+    progressSlider.value = String(first);
+    progressSlider.style.setProperty("--progress", ((first - 1) / (TOTAL_PAGES - 1) * 100) + "%");
+  }
+  progressSlider.addEventListener("input", () => {
+    const target = Number(progressSlider.value);
+    currentPage = isDesktop() && target > 1 && target < TOTAL_PAGES && target % 2 !== 0 ? target - 1 : target;
+    render();
+  });
+  document.getElementById("fullscreenButton").addEventListener("click", async () => {
+    try {
+      if (document.fullscreenElement) await document.exitFullscreen();
+      else if (document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen();
+    } catch (e) { console.warn("Fullscreen unavailable", e); }
+  });
+  document.getElementById("audioInfoButton").addEventListener("click", () => {
+    if (getVisiblePages().some(n => AUDIOBOOK_PAGES[n])) {
+      showHints();
+    } else {
+      alert("朗読は準備中です。現在は4・5ページで試験中です。");
+    }
+  });
 
   /* ========================================
      START
