@@ -584,6 +584,37 @@ html,body,#reader { background:var(--canvas); color:var(--ink); }
 }
 @media(max-width:360px) { .brand small { display:none; } }
 
+/* V3 · restrained book construction and compact progress */
+@media (min-width:900px) {
+  #pages.two-pages { filter:drop-shadow(0 15px 16px rgba(41,51,58,.17)); }
+  #pages.two-pages::before {
+    content:"" !important; display:block !important;
+    position:absolute; z-index:3; pointer-events:none;
+    top:0; bottom:0; left:50%; width:30px;
+    transform:translateX(-50%);
+    background:linear-gradient(90deg,rgba(34,43,48,.075) 0%,rgba(255,255,255,.09) 29%,rgba(41,47,52,.13) 50%,rgba(255,255,255,.08) 72%,rgba(34,43,48,.07) 100%);
+    opacity:.52;
+  }
+  #pages.two-pages .page:first-child {
+    border-radius:5px 0 0 5px;
+    border-left:3px solid #f8f8f6 !important;
+    border-bottom:3px solid #e6e6e3 !important;
+  }
+  #pages.two-pages .page:last-child {
+    border-radius:0 5px 5px 0;
+    border-right:3px solid #f8f8f6 !important;
+    border-bottom:3px solid #e6e6e3 !important;
+  }
+  #pages:not(.two-pages) .page { border-radius:4px; }
+}
+#readerFooter { justify-content:center; gap:clamp(14px,2vw,28px); }
+#progressSlider { flex:0 1 340px; width:min(32vw,340px); min-width:100px; }
+@media(max-width:899px) {
+  #readerFooter { gap:15px; }
+  #progressSlider { flex:1 1 auto; width:auto; min-width:70px; max-width:260px; }
+}
+
+
 </style>
 </head>
 
