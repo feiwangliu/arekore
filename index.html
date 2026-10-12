@@ -584,34 +584,73 @@ html,body,#reader { background:var(--canvas); color:var(--ink); }
 }
 @media(max-width:360px) { .brand small { display:none; } }
 
-/* V3 · restrained book construction and compact progress */
+/* V4 · constructed open-book silhouette, without altering JPG pixels */
 @media (min-width:900px) {
-  #pages.two-pages { filter:drop-shadow(0 15px 16px rgba(41,51,58,.17)); }
+  #pages.two-pages { isolation:isolate; filter:none; }
+  /* A curved sheet stack, accurately sized to the visible JPGs by JS. */
+  #pages.two-pages::after {
+    content:"" !important;
+    display:block !important;
+    position:absolute;
+    pointer-events:none;
+    z-index:-1;
+    left:var(--spread-left, 0px);
+    top:var(--spread-top, 0px);
+    width:var(--spread-width, 0px);
+    height:var(--spread-height, 0px);
+    background:#f9f9f7;
+    border-radius:13px 13px 9px 9px / 8px 8px 12px 12px;
+    box-shadow:
+      0 5px 0 -1px #dedfdd,
+      0 8px 0 -2px #f7f7f4,
+      0 15px 19px rgba(40,52,60,.14),
+      0 27px 36px rgba(40,52,60,.09);
+    transform:translateY(3px) scaleX(1.012);
+  }
+  /* Gentle center gutter, not a dark stripe on top of dialogue. */
   #pages.two-pages::before {
-    content:"" !important; display:block !important;
-    position:absolute; z-index:3; pointer-events:none;
-    top:0; bottom:0; left:50%; width:30px;
+    content:"" !important;
+    display:block !important;
+    position:absolute;
+    pointer-events:none;
+    z-index:3;
+    left:var(--fold-left, 50%);
+    top:var(--spread-top, 0px);
+    height:var(--spread-height, 0px);
+    width:16px;
     transform:translateX(-50%);
-    background:linear-gradient(90deg,rgba(34,43,48,.075) 0%,rgba(255,255,255,.09) 29%,rgba(41,47,52,.13) 50%,rgba(255,255,255,.08) 72%,rgba(34,43,48,.07) 100%);
-    opacity:.52;
+    background:linear-gradient(90deg,
+      rgba(34,45,54,.035) 0%,
+      rgba(34,45,54,.07) 28%,
+      rgba(34,45,54,.105) 48%,
+      rgba(255,255,255,.13) 70%,
+      rgba(255,255,255,0) 100%);
+    opacity:.65;
+  }
+  #pages.two-pages .page {
+    border:0!important;
+    position:relative;
+    box-shadow:0 1px 1px rgba(40,50,58,.04)!important;
   }
   #pages.two-pages .page:first-child {
-    border-radius:5px 0 0 5px;
-    border-left:3px solid #f8f8f6 !important;
-    border-bottom:3px solid #e6e6e3 !important;
+    border-radius:9px 1px 1px 5px / 7px 1px 1px 7px;
+    box-shadow:inset -10px 0 12px -12px rgba(38,45,51,.19)!important;
   }
   #pages.two-pages .page:last-child {
-    border-radius:0 5px 5px 0;
-    border-right:3px solid #f8f8f6 !important;
-    border-bottom:3px solid #e6e6e3 !important;
+    border-radius:1px 9px 5px 1px / 1px 7px 7px 1px;
+    box-shadow:inset 10px 0 12px -12px rgba(38,45,51,.19)!important;
   }
-  #pages:not(.two-pages) .page { border-radius:4px; }
+  #pages:not(.two-pages) .page {
+    border-radius:5px;
+    box-shadow:0 4px 0 #e4e5e3,0 16px 28px rgba(40,52,60,.16)!important;
+  }
 }
-#readerFooter { justify-content:center; gap:clamp(14px,2vw,28px); }
-#progressSlider { flex:0 1 340px; width:min(32vw,340px); min-width:100px; }
+/* The page slider is a compact reading control, not a full-width seek bar. */
+#readerFooter { justify-content:center; gap:clamp(14px,2vw,24px); }
+#progressSlider { flex:0 1 230px; width:min(24vw,230px); min-width:95px; }
 @media(max-width:899px) {
   #readerFooter { gap:15px; }
-  #progressSlider { flex:1 1 auto; width:auto; min-width:70px; max-width:260px; }
+  #progressSlider { flex:1 1 auto; width:auto; min-width:70px; max-width:200px; }
 }
 
 
@@ -1288,6 +1327,18 @@ html,body,#reader { background:var(--canvas); color:var(--ink); }
     const bookLeft = firstRect.left;
     const bookRight = lastRect.right;
     const bookWidth = Math.max(1, bookRight - bookLeft);
+
+    /* Match the CSS-only paper stack to the real, rendered spread. */
+    if (isDesktop() && visibleImages.length === 2) {
+      const hostRect = pagesElement.getBoundingClientRect();
+      const spreadTop = Math.min(firstRect.top, lastRect.top) - hostRect.top;
+      const spreadHeight = Math.max(firstRect.bottom, lastRect.bottom) - Math.min(firstRect.top, lastRect.top);
+      pagesElement.style.setProperty("--spread-left", (bookLeft - hostRect.left) + "px");
+      pagesElement.style.setProperty("--spread-top", spreadTop + "px");
+      pagesElement.style.setProperty("--spread-width", bookWidth + "px");
+      pagesElement.style.setProperty("--spread-height", spreadHeight + "px");
+      pagesElement.style.setProperty("--fold-left", (firstRect.right - hostRect.left) + "px");
+    }
 
     const arrowWidth =
       isDesktop() ? 72 : 52;
