@@ -621,6 +621,15 @@ body:has(#audioUI.visible) #book {padding-bottom:52px;}
 #pages .page-sheet .page { width:100%!important; height:100%!important; max-width:100%!important; max-height:100%!important; object-fit:contain; }
 @media(max-width:899px) { #book {padding:8px 8px 20px;} #pages .page-sheet {padding:8px!important;} }
 
+
+/* Audio UI temporarily hidden; remove this rule to restore the controls. */
+#audioInfoButton,
+#audioUI,
+#audioLeft,
+#audioRight {
+  display: none !important;
+}
+
 </style>
 </head>
 
